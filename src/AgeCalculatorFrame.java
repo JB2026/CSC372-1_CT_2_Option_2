@@ -1,4 +1,5 @@
 // All import statements.
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -63,12 +64,18 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		dayLabel = new JLabel("Please select your birth day:");
 		ageLabel = new JLabel("Current Age: 0");
 		
-		// Set up all the JCombo boxes with their content and action listeners.
-		yearBox = new JComboBox<Integer>(years.reversed().toArray(new Integer[0]));
-		yearBox.addActionListener(this);
-		monthBox = new JComboBox<String>(monthStrings);
-		monthBox.addActionListener(this);
-		dayBox = new JComboBox<Integer>(days.toArray(new Integer[0]));
+		try {
+			// Set up all the JCombo boxes with their content and action listeners.
+			yearBox = new JComboBox<Integer>(years.reversed().toArray(new Integer[0]));
+			yearBox.addActionListener(this);
+			monthBox = new JComboBox<String>(monthStrings);
+			monthBox.addActionListener(this);
+			dayBox = new JComboBox<Integer>(days.toArray(new Integer[0]));
+			
+		} catch (ArrayStoreException | NullPointerException e) {
+			System.out.println("Failed to create combo boxes.");
+			showErrorMessage();
+		}
 		
 		// Create the main panel.
 		panel = new JPanel(new GridBagLayout());
@@ -83,7 +90,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		panel.add(dayLabel, constraints);
+		addComponentToPanel(panel, dayLabel, constraints);
 		
 		// Set up the day box and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -91,7 +98,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 1;
 		constraints.gridy = 0;
-		panel.add(dayBox, constraints);
+		addComponentToPanel(panel, dayBox, constraints);
 		
 		// Set up the month label and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -99,7 +106,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		panel.add(monthLabel, constraints);
+		addComponentToPanel(panel, monthLabel, constraints);
 		
 		// Set up the month box and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -107,7 +114,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 1;
 		constraints.gridy = 1;
-		panel.add(monthBox, constraints);
+		addComponentToPanel(panel, monthBox, constraints);
 		
 		// Set up the year label and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -115,7 +122,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.gridx = 0;
 		constraints.gridy = 2;
-		panel.add(yearLabel, constraints);
+		addComponentToPanel(panel, yearLabel, constraints);
 		
 		// Set up the year box and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -123,7 +130,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 1;
 		constraints.gridy = 2;
-		panel.add(yearBox, constraints);
+		addComponentToPanel(panel, yearBox, constraints);
 		
 		// Set up the age label and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -131,7 +138,7 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.gridx = 0;
 		constraints.gridy = 3;
-		panel.add(ageLabel, constraints);
+		addComponentToPanel(panel, ageLabel, constraints);
 		
 		// Set up the calculate button and its constraints before adding it to the panel.
 		constraints = new GridBagConstraints();
@@ -139,10 +146,25 @@ public class AgeCalculatorFrame extends JFrame implements ActionListener {
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 1;
 		constraints.gridy = 3;
-		panel.add(calcButton, constraints);
+		addComponentToPanel(panel, calcButton, constraints);
 		
-		// Add the main panel to the frame.
-		add(panel);
+		try {
+			// Add the main panel to the frame.
+			add(panel);
+		} catch (NullPointerException e) {
+			System.out.println("Failed to add main panel to the frame");
+			showErrorMessage();
+		}
+	}
+	
+	// A method that adds the passed in component and constraints to the passed in panel. If it fails, it will output a debug message and show an error.
+	private void addComponentToPanel(JPanel panel, Component componentToAdd, Object constraints) {
+		try {
+			panel.add(componentToAdd, constraints);
+		} catch (NullPointerException e) {
+			System.out.println("Failed to add component to main panel.");
+			showErrorMessage();
+		}
 	}
 	
 	@Override
